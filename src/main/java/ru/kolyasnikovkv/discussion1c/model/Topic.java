@@ -5,10 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -28,6 +25,10 @@ public class Topic implements Serializable {
     private String content;
     private Date inTime;
     private Date modifyTime;
+    @ManyToOne
+    @JoinColumn(name = "user_id",
+            foreignKey = @ForeignKey(name = "topic_ibfk_1"))
+    private User user;
     private Integer userId;
     private Integer commentCount;
     private Integer collectCount;

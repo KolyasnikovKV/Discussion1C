@@ -2,36 +2,85 @@ package ru.kolyasnikovkv.discussion1c.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.kolyasnikovkv.discussion1c.dto.CommentsByTopic;
 import ru.kolyasnikovkv.discussion1c.dto.UserDto;
+import ru.kolyasnikovkv.discussion1c.model.Topic;
+import ru.kolyasnikovkv.discussion1c.model.User;
+import ru.kolyasnikovkv.discussion1c.service.CommentService;
+import ru.kolyasnikovkv.discussion1c.service.TopicService;
 import ru.kolyasnikovkv.discussion1c.service.UserService;
 import ru.kolyasnikovkv.discussion1c.util.JsonUtil;
+import ru.kolyasnikovkv.discussion1c.util.Result;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.servlet.http.HttpServletRequest;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
-@RequestMapping(value = UserController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = TopicController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
-public class UserController {
+public class TopicController extends BaseController {
 
-   static final String REST_URL = "/rest/user";
-   private final UserService userService;
+    @Autowired
+    private TopicService topicService;
+    @Autowired
+    private CommentService commentService;
+    @Autowired
+    private UserService userService;
 
+    static final String REST_URL = "/rest/topic";
+    private final UserService userService;
+
+    @GetMapping("/{id}")
+    public Result detail(@PathVariable Integer id, HttpServletRequest request) {
+        Map<String, Object> map = new HashMap<>();
+        // 查询话题详情
+        Topic topic = topicService.selectById(id);
+        // 查询话题的评论
+        List<CommentsByTopic> comments = commentService.selectByTopicId(id);
+        // 查询话题的作者信息
+        User topicUser = userService.selectById(topic.getUserId());
+        // 查询话题有多少收藏
+        List<Collect> collects = collectService.selectByTopicId(id);
+        // 如果自己登录了，查询自己是否收藏过这个话题
+        User user = getApiUser(false);
+        if (user != null) {
+            Collect collect = collectService.selectByTopicIdAndUserId(id, user.getId());
+            map.put("collect", collect);
+        }
+        // 话题浏览量+1
+        String ip = IpUtil.getIpAddr(request);
+        ip = ip.replace(":", "_").replace(".", "_");
+        topic = topicService.updateViewCount(topic, ip);
+        topic.setContent(SensitiveWordUtil.replaceSensitiveWord(topic.getContent(), "*", SensitiveWordUtil.MinMatchType));
+
+        map.put("topic", topic);
+        map.put("tags", tags);
+        map.put("comments", comments);
+        map.put("topicUser", topicUser);
+        map.put("collects", collects);
+        return success(map);
+    }
 
    @PostConstruct()
    public void PostConstractHandler(){
-       Logger logger = Logger.getLogger(UserController.class);
+       Logger logger = Logger.getLogger(TopicController.class);
        logger.info("CountryController - PostConstruct");
    }
 
    @PreDestroy
    public void PreDestroy(){
-       Logger logger = Logger.getLogger(UserController.class);
+       Logger logger = Logger.getLogger(TopicController.class);
        logger.info("CountryController - PreDestroy");
    }
     //http://localhost:8080/rest/user/1
