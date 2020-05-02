@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import ru.kolyasnikovkv.discussion1c.model.User;
+import ru.kolyasnikovkv.discussion1c.util.Result;
 //import ru.kolyasnikovkv.discussion1c.service.ISystemConfigService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +31,14 @@ public class BaseController {
     protected String render(String path) {
         //return String.format("theme/%s/%s", systemConfigService.selectAllConfig().get("theme").toString(), path);
         return "";
+    }
+
+    protected Result success(Object detail) {
+        Result result = new Result();
+        result.setCode(200);
+        result.setDescription("SUCCESS");
+        result.setDetail(detail);
+        return result;
     }
 
 }

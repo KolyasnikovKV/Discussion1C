@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import static ru.kolyasnikovkv.discussion1c.util.JacksonObjectMapper.getMapper;
+import static ru.kolyasnikovkv.discussion1c.util.json.JacksonObjectMapper.getMapper;
 
 public class JsonUtil {
 

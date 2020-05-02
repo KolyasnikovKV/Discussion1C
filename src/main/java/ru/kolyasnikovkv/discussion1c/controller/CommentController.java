@@ -14,8 +14,8 @@ import ru.kolyasnikovkv.discussion1c.model.User;
 import ru.kolyasnikovkv.discussion1c.service.CommentService;
 import ru.kolyasnikovkv.discussion1c.service.TopicService;
 import ru.kolyasnikovkv.discussion1c.service.UserService;
-import ru.kolyasnikovkv.discussion1c.util.JsonUtil;
 import ru.kolyasnikovkv.discussion1c.util.Result;
+import ru.kolyasnikovkv.discussion1c.util.json.JsonUtil;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -41,7 +41,7 @@ public class CommentController extends BaseController {
     private TopicService topicService;
 
     // 创建评论
-    @PostMapping
+  /*  @PostMapping
     public Result create(@RequestBody Map<String, String> body, HttpSession session) {
         User user = getApiUser();
         ApiAssert.isTrue(user.getActive(), "Ваша учетная запись не была активирована, перейдите на страницу личных настроек, чтобы активировать свою учетную запись");
@@ -65,7 +65,7 @@ public class CommentController extends BaseController {
                 .MinMatchType));
         return success(comment);
     }
-
+*/
 
     @PostConstruct()
    public void PostConstractHandler(){

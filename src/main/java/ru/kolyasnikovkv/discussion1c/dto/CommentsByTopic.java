@@ -5,14 +5,20 @@ import lombok.Setter;
 import ru.kolyasnikovkv.discussion1c.model.Comment;
 
 import java.io.Serializable;
+import java.util.Date;
+
 @Getter
 @Setter
-public class CommentsByTopic extends Comment implements Serializable {
+public class CommentsByTopic implements Serializable {
     private static final long serialVersionUID = 8082073760910701836L;
-    // Структура данных одного объекта в списке комментариев под темой
-
+    private Integer id;
+    private Integer topicId;
+    private Integer userId;
+    private String content;
+    private Date inTime;
+    private Integer commentId;
+    private String upIds;
     private String username;
     private String avatar;
-    // Уровень комментария, если вы непосредственно комментируете тему, уровень равен 0. Если вы отвечаете на комментарий, текущий отвечающий слой - это слой 1 объекта комментария. layer+1
     private Integer layer;
 }

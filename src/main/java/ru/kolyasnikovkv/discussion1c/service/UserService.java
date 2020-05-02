@@ -21,6 +21,13 @@ public class UserService {
                 .map(converter::convert)
                 .collect(Collectors.toList());
 */
+
+    public User selectById(Integer id) {
+        User user = repository.findById(id);
+        // checkNotFoundWithId(country, id);
+        return user;
+    }
+
     public UserDto get(Integer id) {
         User user = repository.findById(id);
        // checkNotFoundWithId(country, id);

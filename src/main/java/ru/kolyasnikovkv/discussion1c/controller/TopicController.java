@@ -13,7 +13,6 @@ import ru.kolyasnikovkv.discussion1c.model.User;
 import ru.kolyasnikovkv.discussion1c.service.CommentService;
 import ru.kolyasnikovkv.discussion1c.service.TopicService;
 import ru.kolyasnikovkv.discussion1c.service.UserService;
-import ru.kolyasnikovkv.discussion1c.util.JsonUtil;
 import ru.kolyasnikovkv.discussion1c.util.Result;
 
 import javax.annotation.PostConstruct;
@@ -36,39 +35,38 @@ public class TopicController extends BaseController {
     @Autowired
     private CommentService commentService;
     @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     static final String REST_URL = "/rest/topic";
-    private final UserService userService;
 
     @GetMapping("/{id}")
     public Result detail(@PathVariable Integer id, HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>();
-        // 查询话题详情
+        // Запросить детали темы
         Topic topic = topicService.selectById(id);
-        // 查询话题的评论
+        // Запрос комментариев к теме
         List<CommentsByTopic> comments = commentService.selectByTopicId(id);
-        // 查询话题的作者信息
+        // Запрос информации об авторе темы
         User topicUser = userService.selectById(topic.getUserId());
-        // 查询话题有多少收藏
-        List<Collect> collects = collectService.selectByTopicId(id);
-        // 如果自己登录了，查询自己是否收藏过这个话题
-        User user = getApiUser(false);
-        if (user != null) {
-            Collect collect = collectService.selectByTopicIdAndUserId(id, user.getId());
-            map.put("collect", collect);
-        }
-        // 话题浏览量+1
-        String ip = IpUtil.getIpAddr(request);
-        ip = ip.replace(":", "_").replace(".", "_");
-        topic = topicService.updateViewCount(topic, ip);
-        topic.setContent(SensitiveWordUtil.replaceSensitiveWord(topic.getContent(), "*", SensitiveWordUtil.MinMatchType));
+        // Запрос, сколько избранных в теме
+        //List<Collect> collects = collectService.selectByTopicId(id);
+        // Если вы вошли в систему, проверьте, одобрили ли вы эту тему
+//        User user = getApiUser(false);
+//        if (user != null) {
+//            Collect collect = collectService.selectByTopicIdAndUserId(id, user.getId());
+//            map.put("collect", collect);
+//        }
+//        // 话题浏览量+1
+//        String ip = IpUtil.getIpAddr(request);
+//        ip = ip.replace(":", "_").replace(".", "_");
+//        topic = topicService.updateViewCount(topic, ip);
+//        topic.setContent(SensitiveWordUtil.replaceSensitiveWord(topic.getContent(), "*", SensitiveWordUtil.MinMatchType));
 
         map.put("topic", topic);
-        map.put("tags", tags);
+//        map.put("tags", tags);
         map.put("comments", comments);
         map.put("topicUser", topicUser);
-        map.put("collects", collects);
+//        map.put("collects", collects);
         return success(map);
     }
 
@@ -84,32 +82,32 @@ public class TopicController extends BaseController {
        logger.info("CountryController - PreDestroy");
    }
     //http://localhost:8080/rest/user/1
-   @GetMapping("/{id}")
-   @ResponseBody
-    public ResponseEntity<UserDto> get(@PathVariable Integer id) {
-       UserDto userDto = userService.get(id);
-       return ok(userDto);
-       /*ObjectMapper objectMapper = new ObjectMapper();
-       String json = objectMapper.writeValueAsString(result);
-       return json;*/
-    }
-
-    @PostMapping(value ="/add", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public ResponseEntity<UserDto> add(@RequestBody UserDto request) {
-        //if (!accountRepository.existsByNameAndOwnerId(request.getName(), userDetails.getId())) {
-        UserDto countryDto = userService.create(request);
-        return ok(countryDto);
-    }
-
-    @PostMapping(value ="/addStr", consumes = MediaType.TEXT_PLAIN_VALUE)
-    @ResponseBody
-    public ResponseEntity<UserDto> addStr(@RequestBody String request) {
-        //if (!accountRepository.existsByNameAndOwnerId(request.getName(), userDetails.getId())) {
-        UserDto userDto = JsonUtil.readValue(request, UserDto.class);
-        userDto = userService.create(userDto);
-        return ok(userDto);
-    }
+//   @GetMapping("/{id}")
+//   @ResponseBody
+//    public ResponseEntity<UserDto> get(@PathVariable Integer id) {
+//       UserDto userDto = userService.get(id);
+//       return ok(userDto);
+//       /*ObjectMapper objectMapper = new ObjectMapper();
+//       String json = objectMapper.writeValueAsString(result);
+//       return json;*/
+//    }
+//
+//    @PostMapping(value ="/add", consumes = MediaType.APPLICATION_JSON_VALUE)
+//    @ResponseBody
+//    public ResponseEntity<UserDto> add(@RequestBody UserDto request) {
+//        //if (!accountRepository.existsByNameAndOwnerId(request.getName(), userDetails.getId())) {
+//        UserDto countryDto = userService.create(request);
+//        return ok(countryDto);
+//    }
+//
+//    @PostMapping(value ="/addStr", consumes = MediaType.TEXT_PLAIN_VALUE)
+//    @ResponseBody
+//    public ResponseEntity<UserDto> addStr(@RequestBody String request) {
+//        //if (!accountRepository.existsByNameAndOwnerId(request.getName(), userDetails.getId())) {
+//        UserDto userDto = JsonUtil.readValue(request, UserDto.class);
+//        userDto = userService.create(userDto);
+//        return ok(userDto);
+//    }
      ///return status(HttpStatus.BAD_REQUEST).build();
     //}
 

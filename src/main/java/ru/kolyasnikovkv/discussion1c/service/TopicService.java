@@ -7,6 +7,7 @@ import org.springframework.util.StringUtils;
 import ru.kolyasnikovkv.discussion1c.dto.UserDto;
 import ru.kolyasnikovkv.discussion1c.model.Topic;
 import ru.kolyasnikovkv.discussion1c.model.User;
+import ru.kolyasnikovkv.discussion1c.repository.jpa.CrudTopicJpaDao;
 import ru.kolyasnikovkv.discussion1c.repository.jpa.CrudUserJpaDao;
 
 import javax.servlet.http.HttpSession;
@@ -17,9 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 public class TopicService {
 
-    private final CrudUserJpaDao repository;
-    private final Converter<User, UserDto> converter;
-    private final Converter<UserDto, User> converterDto;
+    private final CrudTopicJpaDao repository;
 
    /* public List<AccountDTO> listByUser(Long userId) {
         return accountRepository.findAccountsByOwnerId(userId)
@@ -56,41 +55,16 @@ public class TopicService {
         return topic;
     }
 */
-    // 根据id查询话题
-    @Override
+    //Запросить темы на основе идентификатора
     public Topic selectById(Integer id) {
-        return topicMapper.selectById(id);
+        return repository.findById(id);
     }
 
-    // 根据title查询话题，防止重复话题
+   /*  //Запрашивать темы на основе заголовка, чтобы избежать дублирования тем
     @Override
     public Topic selectByTitle(String title) {
         QueryWrapper<Topic> wrapper = new QueryWrapper<>();
         wrapper.lambda().eq(Topic::getTitle, title);
         return topicMapper.selectOne(wrapper);
-    }
-    public UserDto get(Integer id) {
-        User user = repository.findById(id);
-       // checkNotFoundWithId(country, id);
-        return converter.convert(user);
-    }
-
-    public void delete(Integer id) {
-        //checkNotFoundWithId(repository.delete(id), id);
-
-    }
-
-    public UserDto create(UserDto userDto){
-        User user = converterDto.convert(userDto);
-        user = repository.save(user);
-        return converter.convert(user);
-    }
-
-    public UserDto update(UserDto userDto) {
-        User user = repository.findById(userDto.getId());
-        //country = checkNotFoundWithId(country, countryDto.getId());
-        user.setUsername(userDto.getName());
-        user = repository.save(user);
-        return converter.convert(user);
-    }
+    }*/
 }

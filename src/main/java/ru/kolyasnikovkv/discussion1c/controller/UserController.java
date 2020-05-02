@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.kolyasnikovkv.discussion1c.dto.UserDto;
 import ru.kolyasnikovkv.discussion1c.service.UserService;
-import ru.kolyasnikovkv.discussion1c.util.JsonUtil;
+import ru.kolyasnikovkv.discussion1c.util.json.JsonUtil;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
